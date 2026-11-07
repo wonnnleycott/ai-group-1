@@ -96,3 +96,19 @@ print("standing still       :", penalty_joint_limits(still_walk(-1.0, -0.5)))
 print("simple walk          :", penalty_joint_limits(simple_walk()))
 print("tibias at 1.5 (max 1):", round(penalty_joint_limits(still_walk(-1.0, 1.5)), 4))
 print("random -2 to 2 poses :", round(penalty_joint_limits(random_poses), 4))
+
+
+from fitness import fitness
+
+print("\nFull Fitness: ")
+results = {
+    "walking forwards ": fitness(simple_walk(direction=1)),
+    "standing still   ": fitness(still_walk(-1.0, -0.5)),
+    "sliding, no lift ": fitness(simple_walk(lift=False)),
+    "walking backwards": fitness(simple_walk(direction=-1)),
+    "all zeros        ": fitness(still_walk(0.0, 0.0)),
+    "random poses     ": fitness(random_poses),
+}
+# print them from best to worst
+for name, score in sorted(results.items(), key=lambda item: item[1], reverse=True):
+    print(f"{name}  {score:8.3f}")

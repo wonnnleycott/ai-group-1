@@ -76,3 +76,37 @@ def penalty_joint_limits(gait):
     too_low = np.clip(lower - gait, 0, None)     # how far below the lower limit 
     too_high = np.clip(gait - upper, 0, None)    # how far above the upper limit 
     return (too_low + too_high).mean()
+
+
+weights = {
+    "ground":     1.0,   # feet reach the ground
+    "stability":  2.0,   # enough feet down on both sides
+    "forward":    1.0,   # distance moved forwards
+    "energy":     0.5,   # total joint movement
+    "smoothness": 1.0,   # jerky movement
+    "limits":     10.0,  # impossible joint angles
+}
+
+
+def fitness(gait, return_parts=False):
+    feet = get_gait_feet(gait)          # work out the feet once, reuse for every score
+
+    parts = {
+        "ground":     score_ground_contact(feet),
+        "stability":  score_stability(feet),
+        "forward":    score_forward(feet),
+        "energy":     penalty_energy(gait),
+        "smoothness": penalty_smoothness(gait),
+        "limits":     penalty_joint_limits(gait),
+    }
+
+    total = (weights["ground"]     * parts["ground"]
+           + weights["stability"]  * parts["stability"]
+           + weights["forward"]    * parts["forward"]
+           - weights["energy"]     * parts["energy"]
+           - weights["smoothness"] * parts["smoothness"]
+           - weights["limits"]     * parts["limits"])
+
+    if return_parts:
+        return total, parts
+    return total
