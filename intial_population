@@ -1,0 +1,40 @@
+import random
+
+
+def create_chromosome():
+
+    chromosome = []
+
+    for i in range(24):
+        angle = random.uniform(-2.0, 2.0)
+        chromosome.append(angle)
+
+    return chromosome
+
+
+def create_gait():
+
+    gait = []
+
+    for frame in range(300):
+        chromosome = create_chromosome()
+        gait.append(chromosome)
+
+    return gait
+
+
+def create_population(population_size):
+
+    population = []
+
+    for i in range(population_size):
+        chromosome = create_chromosome()
+        population.append(chromosome)
+
+    return population
+
+
+initial_population = create_population(50)
+
+print("First chromosome in population:")
+print(initial_population[0])
