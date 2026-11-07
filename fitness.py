@@ -36,3 +36,14 @@ def score_ground_contact(feet):
     sink_penalty = depth.mean()
 
     return touch_score - sink_penalty
+
+def score_stability(feet):
+    heights = feet[:, :, 2]                                  
+    on_ground = heights <= ground_z + contact_tolerance      
+
+    # Leg order is L1 L2 L3 L4 R4 R3 R2 R1
+    left_down = on_ground[:, 0:4].sum(axis=1)     # left feet down
+    right_down = on_ground[:, 4:8].sum(axis=1)    # right feet down
+
+    stable = (left_down >= 2) & (right_down >= 2)           
+    return stable.mean()                          # fraction of stable frames
