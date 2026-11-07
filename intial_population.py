@@ -1,12 +1,12 @@
 import random
-
+from joint_limits import lower, upper
 
 def create_chromosome():
 
     chromosome = []
 
     for i in range(24):
-        angle = random.uniform(-2.0, 2.0)
+        angle = random.uniform(float(lower[i]), float(upper[i]))  
         chromosome.append(angle)
 
     return chromosome
