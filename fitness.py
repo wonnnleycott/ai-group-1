@@ -1,5 +1,6 @@
 import numpy as np
 from spider_kinematics import get_foot_positions
+from joint_limits import lower, upper
 
 ground_z = -0.5            # where the ground is (body is at z = 0)
 contact_tolerance = 0.1    
@@ -67,3 +68,11 @@ def penalty_smoothness(gait):
     step = np.roll(gait, -1, axis=0) - gait          # speed of each joint each frame
     change = np.roll(step, -1, axis=0) - step        # how much that speed changes
     return np.abs(change).mean() * 100            
+
+
+
+def penalty_joint_limits(gait):
+    gait = np.asarray(gait, dtype=float)
+    too_low = np.clip(lower - gait, 0, None)     # how far below the lower limit 
+    too_high = np.clip(gait - upper, 0, None)    # how far above the upper limit 
+    return (too_low + too_high).mean()

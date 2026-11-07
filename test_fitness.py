@@ -87,3 +87,12 @@ for name, gait in {
 }.items():
     print(name, " energy =", round(penalty_energy(gait), 3),
           "  smoothness =", round(penalty_smoothness(gait), 3))
+
+
+from fitness import penalty_joint_limits
+
+print("\nJoint limits penalty (0 = all allowed):")
+print("standing still       :", penalty_joint_limits(still_walk(-1.0, -0.5)))
+print("simple walk          :", penalty_joint_limits(simple_walk()))
+print("tibias at 1.5 (max 1):", round(penalty_joint_limits(still_walk(-1.0, 1.5)), 4))
+print("random -2 to 2 poses :", round(penalty_joint_limits(random_poses), 4))
