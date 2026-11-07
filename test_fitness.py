@@ -23,8 +23,8 @@ from fitness import score_stability
 
 
 def legs_down_walk(down_legs):
-#Test walk: legs in down_legs stand on the ground, the rest are lifted.
-#Leg numbers: 0=L1 1=L2 2=L3 3=L4 4=R4 5=R3 6=R2 7=R1
+# Test walk: legs in down_legs stand on the ground, the rest are lifted.
+# Leg numbers: 0=L1 1=L2 2=L3 3=L4 4=R4 5=R3 6=R2 7=R1
     pose = np.zeros(24)                  # feet up in the air
     for leg in down_legs:
         pose[3*leg + 1] = -1.0           # femur down
@@ -40,3 +40,30 @@ print("L1 L3 R4 R2 down    :", score_stability(get_gait_feet(legs_down_walk([0, 
 
 half = np.vstack([legs_down_walk(range(8))[:150], legs_down_walk([0, 1, 2, 3])[:150]])
 print("stable half the time:", score_stability(get_gait_feet(half)))
+
+
+from fitness import score_forward
+
+def simple_walk(direction=1, lift=True, n=300):
+    t = np.arange(n) / n
+    gait = np.zeros((n, 24))
+    group_a = [0, 2, 4, 6]
+    for leg in range(8):
+        side = 1 if leg < 4 else -1                      # left and right coxa turn opposite ways
+        phase = 0 if leg in group_a else np.pi           # the 2 groups are half a cycle apart
+        swing_pos = np.sin(2*np.pi*t + phase)           
+        moving_fwd = np.cos(2*np.pi*t + phase) < 0       
+        gait[:, 3*leg] = direction * side * 0.3 * swing_pos         
+        lifted = moving_fwd if lift else np.zeros(n, bool)
+        gait[:, 3*leg + 1] = np.where(lifted, -0.5, -1.0)          
+        gait[:, 3*leg + 2] = -0.5                                   
+    return gait
+
+print("\nMoving forward:")
+for name, gait in {
+    "standing still   ": still_walk(-1.0, -0.5),
+    "walking forwards ": simple_walk(direction=1),
+    "walking backwards": simple_walk(direction=-1),
+    "sliding, no lift ": simple_walk(lift=False),
+}.items():
+    print(name, "forward score =", round(score_forward(get_gait_feet(gait)), 3))

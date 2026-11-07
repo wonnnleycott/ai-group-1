@@ -1,17 +1,9 @@
-# Scores how good a walk is. Higher score = better walk.
-# A gait is 300 poses x 24 joint angles, in the leg order
-# L1 L2 L3 L4 R4 R3 R2 R1
-
 import numpy as np
 from spider_kinematics import get_foot_positions
 
 ground_z = -0.5            # where the ground is (body is at z = 0)
-contact_tolerance = 0.1    # a foot within 0.1 of the ground counts as touching it
+contact_tolerance = 0.1    
 
-
-# Works out every foot position for every frame of a walk.
-# Input:  gait  = 300 x 24 angles
-# Output: feet  = 300 x 8 x 3  (frame, leg, [x y z])
 def get_gait_feet(gait):
     gait = np.asarray(gait, dtype=float)
     n_frames = gait.shape[0]                 # how many poses 
@@ -20,12 +12,8 @@ def get_gait_feet(gait):
         feet[f] = get_foot_positions(gait[f])   # all feet for this pose
     return feet
 
-
-
 def score_ground_contact(feet):
     heights = feet[:, :, 2]             
-
-    # does each foot reach the ground at its lowest point
     lowest = heights.min(axis=0)             
     gap = np.abs(lowest - ground_z)      
     touch = np.clip(1 - gap / 0.5, 0, 1)     # gap 0 -> 1, gap 0.5+ -> 0
@@ -47,3 +35,22 @@ def score_stability(feet):
 
     stable = (left_down >= 2) & (right_down >= 2)           
     return stable.mean()                          # fraction of stable frames
+
+
+def score_forward(feet):
+    heights = feet[:, :, 2]                              
+    xs = feet[:, :, 0]                                      
+    on_ground = heights <= ground_z + contact_tolerance
+
+    next_x = np.roll(xs, -1, axis=0)
+    next_on = np.roll(on_ground, -1, axis=0)
+    dx = next_x - xs                                       
+
+    planted = on_ground & next_on                            
+    push = np.where(planted, -dx, 0.0)                   
+
+    feet_down = planted.sum(axis=1)                       
+    body_move = np.where(feet_down > 0,
+                         push.sum(axis=1) / np.maximum(feet_down, 1),
+                         0.0)                                # average push per frame
+    return body_move.sum()                                   # total distance over the walk
