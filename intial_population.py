@@ -6,7 +6,7 @@ def create_chromosome():
     chromosome = []
 
     for i in range(24):
-        angle = random.uniform(lower[i], upper[i])
+        angle = random.uniform(float(lower[i]), float(upper[i]))  
         chromosome.append(angle)
 
     return chromosome
