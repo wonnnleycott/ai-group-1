@@ -20,3 +20,19 @@ def get_gait_feet(gait):
         feet[f] = get_foot_positions(gait[f])   # all feet for this pose
     return feet
 
+
+
+def score_ground_contact(feet):
+    heights = feet[:, :, 2]             
+
+    # does each foot reach the ground at its lowest point
+    lowest = heights.min(axis=0)             
+    gap = np.abs(lowest - ground_z)      
+    touch = np.clip(1 - gap / 0.5, 0, 1)     # gap 0 -> 1, gap 0.5+ -> 0
+    touch_score = touch.mean()               # average over the 8 legs
+
+    # don't let feet sink 
+    depth = np.clip((ground_z - contact_tolerance) - heights, 0, None)
+    sink_penalty = depth.mean()
+
+    return touch_score - sink_penalty
