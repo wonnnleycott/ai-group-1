@@ -67,3 +67,23 @@ for name, gait in {
     "sliding, no lift ": simple_walk(lift=False),
 }.items():
     print(name, "forward score =", round(score_forward(get_gait_feet(gait)), 3))
+
+
+from fitness import penalty_energy, penalty_smoothness
+
+t = np.arange(300) / 300
+smooth_wave = still_walk(-1.0, -0.5)
+smooth_wave[:, 0::3] += 0.3 * np.sin(2 * np.pi * t)[:, None]   # add swing to every coxa
+
+rng = np.random.default_rng(0)                                 # fixed seed = same "random" every run
+random_poses = rng.uniform(-2.0, 2.0, (300, 24))
+
+print("\nEnergy and smoothness (lower = better):")
+for name, gait in {
+    "standing still": still_walk(-1.0, -0.5),
+    "smooth wave   ": smooth_wave,
+    "simple walk   ": simple_walk(),
+    "random poses  ": random_poses,
+}.items():
+    print(name, " energy =", round(penalty_energy(gait), 3),
+          "  smoothness =", round(penalty_smoothness(gait), 3))

@@ -54,3 +54,16 @@ def score_forward(feet):
                          push.sum(axis=1) / np.maximum(feet_down, 1),
                          0.0)                                # average push per frame
     return body_move.sum()                                   # total distance over the walk
+
+
+def penalty_energy(gait):
+    gait = np.asarray(gait, dtype=float)
+    step = np.roll(gait, -1, axis=0) - gait          # movement from each frame to the next
+    return np.abs(step).sum(axis=0).mean()           # total per joint, then average of 24 joints
+
+
+def penalty_smoothness(gait):
+    gait = np.asarray(gait, dtype=float)
+    step = np.roll(gait, -1, axis=0) - gait          # speed of each joint each frame
+    change = np.roll(step, -1, axis=0) - step        # how much that speed changes
+    return np.abs(change).mean() * 100            
