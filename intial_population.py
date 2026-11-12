@@ -1,12 +1,13 @@
 import random
 from joint_limits import lower, upper
 
+
 def create_chromosome():
 
     chromosome = []
 
     for i in range(24):
-        angle = random.uniform(float(lower[i]), float(upper[i]))  
+        angle = random.uniform(float(lower[i]), float(upper[i]))
         chromosome.append(angle)
 
     return chromosome
@@ -34,7 +35,7 @@ def create_population(population_size):
     return population
 
 
-initial_population = create_population(50)
-
-print("First chromosome in population:")
-print(initial_population[0])
+if __name__ == "__main__":
+    population = create_population(50)
+    print("First chromosome in population:")
+    print(population[0])

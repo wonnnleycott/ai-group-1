@@ -10,7 +10,7 @@ chromosomes and the fitness values as a list of numbers with matching indices.
 from __future__ import annotations
 
 import random
-from typing import Any, List, Sequence, Tuple
+from typing import List, Sequence, Tuple
 
 
 Chromosome = Sequence[float]

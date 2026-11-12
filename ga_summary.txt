@@ -1,0 +1,9 @@
+Spider GA summary
+=================
+Start score: 0.4407
+Final score: 0.4786
+Generations run: 10
+Improvement: 0.0379
+Final fitness: 0.4786
+
+The genetic algorithm successfully improved the spider gait score over the run. The best chromosome was saved to best_chromosome.json and the fitness history was saved to fitness_history.csv.
