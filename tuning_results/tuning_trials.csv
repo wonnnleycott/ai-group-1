@@ -1,0 +1,3 @@
+config_id,seed,population_size,generations,elite_count,tournament_size,mutation_rate,mutation_scale,crossover_rate,frames,n_evals,final_best,best_overall,auc,plateau_gen,wall_time_s,history
+pop12_el4_tk3_mr0.100_ms0.200_cr0.90,3026,12,10,4,3,0.1,0.2,0.9,1,132,0.529162,0.529162,0.503632,9,0.17,0.4218;0.4451;0.4708;0.4883;0.5140;0.5140;0.5140;0.5159;0.5159;0.5292;0.5292
+pop12_el4_tk3_mr0.100_ms0.200_cr0.90,3027,12,10,4,3,0.1,0.2,0.9,1,132,2.591082,2.591082,2.476316,10,0.16,2.4173;2.4173;2.4173;2.4199;2.4487;2.4609;2.4620;2.4801;2.4853;2.5806;2.5911

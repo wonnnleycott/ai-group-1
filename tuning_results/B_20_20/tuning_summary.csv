@@ -1,0 +1,2 @@
+config_id,n_runs,population_size,generations,elite_count,tournament_size,mutation_rate,mutation_scale,crossover_rate,n_evals,mean_best,std_best,sem_best,min_best,max_best,mean_auc,mean_plateau_gen,mean_wall_time_s
+pop20_el4_tk3_mr0.100_ms0.200_cr0.90,5,20,20,4,3,0.1,0.2,0.9,420,2.720131,0.090792,0.040603,2.581544,2.8365,2.448203,20,0.47
