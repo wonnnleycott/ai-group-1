@@ -19,6 +19,7 @@ import numpy as np
 
 from genetic_algorithm import run_genetic_algorithm
 from spider_kinematics import get_foot_positions
+from gait_encoding import decode_chromosome
 
 
 ROOT = Path(__file__).resolve().parent
@@ -27,11 +28,14 @@ FITNESS_HISTORY_PATH = ROOT / "fitness_history.csv"
 PLOT_PATH = ROOT / "ga_fitness_history.png"
 ANIMATION_PATH = ROOT / "spider_walk_animation.gif"
 SUMMARY_PATH = ROOT / "ga_summary.txt"
-
+BEST_GAIT_PATH = ROOT / "best_gait.csv"
 
 def build_gait(chromosome: list[float], frames: int = 300) -> np.ndarray:
-    return np.tile(np.asarray(chromosome, dtype=float), (frames, 1))
+    return decode_chromosome(chromosome, frames)   # 56 genes -> frames x 24 walk
 
+def save_best_gait(chromosome: list[float]) -> None:
+    "training data for Part 2"
+    np.savetxt(BEST_GAIT_PATH, build_gait(chromosome, frames=300), delimiter=",", fmt="%.6f")
 
 def save_best_chromosome(chromosome: list[float]) -> None:
     with BEST_CHROMOSOME_PATH.open("w", encoding="utf-8") as f:
@@ -142,6 +146,7 @@ def main() -> None:
     final_score = history[-1]
 
     save_best_chromosome(best_chromosome)
+    save_best_gait(best_chromosome)
     save_history(history)
     plot_history(history)
     animate_best_walk(best_chromosome)
@@ -154,6 +159,7 @@ def main() -> None:
     print(f"Fitness history saved to: {FITNESS_HISTORY_PATH}")
     print(f"Plot saved to: {PLOT_PATH}")
     print(f"Animation saved to: {ANIMATION_PATH}")
+    print(f"Best walk (300 x 24) saved to: {BEST_GAIT_PATH}")
 
 
 if __name__ == "__main__":
