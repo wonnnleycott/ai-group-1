@@ -1,8 +1,8 @@
 """Genetic algorithm operators for evolving spider gait chromosomes.
 
-This project represents a chromosome as a list of 24 joint angles. The
-fitness function in ``fitness.py`` expects a full gait (a sequence of poses), so
-for evaluation we repeatedly tile the chromosome into a 300-frame gait.
+A chromosome is 56 real-valued genes describing a sine-wave walk
+(see gait_encoding.py). Before scoring, each chromosome is decoded into
+a 300-frame gait (300 x 24 joint angles) and passed to fitness.py.
 """
 
 from __future__ import annotations
@@ -13,8 +13,7 @@ from typing import Callable, List, Sequence, Tuple
 import numpy as np
 
 from fitness import fitness
-from intial_population import create_population
-from joint_limits import lower, upper
+from gait_encoding import create_gait_population, decode_chromosome, gene_lower, gene_upper
 from selection import select_for_next_generation
 
 Chromosome = Sequence[float]
@@ -55,7 +54,7 @@ def mutate(
     for i in range(len(mutated)):
         if rng.random() < mutation_rate:
             delta = rng.uniform(-mutation_scale, mutation_scale)
-            mutated[i] = float(np.clip(mutated[i] + delta, lower[i], upper[i]))
+            mutated[i] = float(np.clip(mutated[i] + delta, gene_lower[i], gene_upper[i]))
     return mutated
 
 
@@ -67,7 +66,7 @@ def evaluate_population(
     """Evaluate each chromosome by converting it to a repeated gait."""
     scores: List[float] = []
     for chromosome in population:
-        gait = np.tile(np.asarray(chromosome, dtype=float), (frames_per_gait, 1))
+        gait = decode_chromosome(chromosome, frames_per_gait)
         scores.append(float(fitness_fn(gait)))
     return scores
 
@@ -119,7 +118,7 @@ def run_genetic_algorithm(
 ) -> Tuple[List[List[float]], List[float], List[float]]:
     """Run a simple GA and return the final population, best scores, and generation history."""
     rng = random.Random(seed)
-    population = create_population(population_size)
+    population = create_gait_population(population_size, rng)
     best_scores: List[float] = []
     generation_best: List[float] = []
 
@@ -145,7 +144,7 @@ def run_genetic_algorithm(
 
 
 if __name__ == "__main__":
-    test_population = create_population(10)
+    test_population = create_gait_population(10)
     scores = evaluate_population(test_population)
     best = max(scores)
     print("Best initial score:", best)
