@@ -2,9 +2,10 @@
 Selection operators for the spider Genetic Algorithm.
 
 The GA is assumed to be a maximisation problem: a larger fitness value means
-that a chromosome is better. Each chromosome may be represented by any
-sequence of 24 joint angles, while the population is represented as a list of
-chromosomes and the fitness values as a list of numbers with matching indices.
+that a chromosome is better. Each chromosome may be represented by a 
+fixed-length list of genes (56 in our sine-wave encoding), while the population is 
+represented as a list of chromosomes and the fitness values as a list of numbers 
+with matching indices.
 """
 
 from __future__ import annotations
@@ -129,8 +130,8 @@ def _validate_inputs(
         raise ValueError("tournament_size must be between 1 and population size")
     if any(not isinstance(value, (int, float)) for value in fitnesses):
         raise TypeError("fitnesses must contain numeric values")
-    if any(len(chromosome) != 24 for chromosome in population):
-        raise ValueError("each spider chromosome must contain exactly 24 angles")
+    if len({len(chromosome) for chromosome in population}) != 1:
+        raise ValueError("all chromosomes must be the same length")
 
 
 if __name__ == "__main__":
