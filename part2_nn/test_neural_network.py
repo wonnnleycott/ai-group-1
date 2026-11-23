@@ -17,8 +17,10 @@ nn = Full_NN(X=2, HL=[4], Y=3, seed=2)
 x = rng.uniform(-1, 1, (6, 2))
 t = rng.uniform(0, 1, (6, 3))
 
+
 def error(net):
     return 0.5 * np.sum((t - net.FF(x)) ** 2) / x.shape[0]
+
 
 nn.BP(t - nn.FF(x))
 bp_change = nn.Der[0][0, 0]                  # BP's answer for one weight
