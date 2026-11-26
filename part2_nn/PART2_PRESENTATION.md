@@ -2,7 +2,7 @@
 
 ## Slide 1 — Neural-Network Gait Learning
 
-**Presenter:** [Your Name]
+**Presenter:** AI group 1
 
 **Topic:** Learning the spider gait from phase information
 
