@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parent.parent          # main project folder
 sys.path.insert(0, str(ROOT))                           # so we can import Part 1 files
 from joint_limits import lower, upper                   # robot joint limits 
 
+
 GAIT_FILE = ROOT / "best_gait.csv"                      # made by ga_analysis.py 
 OUT_FILE = Path(__file__).resolve().parent / "dataset.npz"
 TEST_EVERY = 5                                       
